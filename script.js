@@ -45,6 +45,9 @@ class Calculator {
             case "÷":
                 result = first / second
                 break
+            case "√":
+                result = Math.sqrt(second)
+                break
             default: 
                 return
         }
@@ -104,24 +107,44 @@ class Calculator {
     output() {
         if (this.currentOperand === "0" || this.currentOperand === "" || this.previousOperand === "") return
             this.compute()
-            this.operation = operation
-            this.currentOperand = this.previousOperand
-            this.previousOperand = ""
+            // this.operation = operation
+            // this.currentOperand = this.previousOperand
+            // this.previousOperand = ""
     }
 
     sqrtOutput() {
-        if (this.currentOperand === "0" || this.currentOperand === "" || this.previousOperand === "") return
-        this.operation = operation
+        if (this.currentOperand === "0" || this.currentOperand === "" || this.previousOperand !== "" || this.currentOperand < 0) return
         let result
         result = Math.sqrt(parseFloat(this.currentOperand))
-        this.currentOperand = result.toString()
-        
-        // this.currentOperand = this.previousOperand
-        // this.previousOperand = ""
+        this.currentOperand = result
+    }
+
+
+    percentOutput() {
+        if (this.currentOperand === "0" || this.currentOperand === "") return
+        let result
+        if (this.previousOperand !== "") {
+            this.compute()
+            // this.operation = operation
+            // this.currentOperand = this.previousOperand
+            // this.previousOperand = ""
+            result = (this.currentOperand) / 100
+        } else {
+            result = (this.currentOperand) / 100
+        }
+        this.currentOperand = result        
+    }
+
+
+    negateDisplay() {
+        if (this.currentOperand === "0") return
+        let number, result
+        number = parseFloat(this.currentOperand)
+        result = 0 - number
+        this.currentOperand = result
     }
 
     updateDisplay() {
-
         this.currentOperandTextElement.innerText = this.tweakDisplay(this.currentOperand)
         if (this.operation == null) {
             this.previousOperandTextElement.innerText = ""} else {
@@ -142,27 +165,28 @@ const previousOperandTextElement = document.querySelector("[data-previous-operan
 const currentOperandTextElement = document.querySelector("[data-current-operand]")
 const equalsButton = document.querySelector("[data-equals]")
 const sqrtButton = document.querySelector("[data-sqrt]")
+const percentButton = document.querySelector("[data-percent]")
 
 
 const calculator = new Calculator (previousOperandTextElement, currentOperandTextElement)
 
 numberButtons.forEach(button => {
     button.addEventListener("click", () => {
-        calculator.appendNumber(button.innerText)
-        calculator.updateDisplay()
+    calculator.appendNumber(button.innerText)
+    calculator.updateDisplay()
     })
 })
 
 operationButtons.forEach(button => {
     button.addEventListener("click", () => {
-        calculator.chooseOperation(button.innerText)
-         calculator.updateDisplay()
+    calculator.chooseOperation(button.innerText)
+    calculator.updateDisplay()
     })
 })
 
 equalsButton.addEventListener("click", () => {
-        calculator.output()
-        calculator.updateDisplay()
+    calculator.output()
+    calculator.updateDisplay()
 })
 
 sqrtButton.addEventListener("click", () => {
@@ -179,3 +203,14 @@ deleteButton.addEventListener("click", () => {
     calculator.delete()
     calculator.updateDisplay()
 })
+
+percentButton.addEventListener("click", () => {
+    calculator.percentOutput()
+    calculator.updateDisplay()
+})
+
+negateButton.addEventListener("click", () => {
+    calculator.negateDisplay()
+    calculator.updateDisplay()
+})
+
